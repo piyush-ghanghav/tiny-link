@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 import {prisma} from '@/lib/prisma'
 import { isValidCode, isValidUrl, generateCode } from "@/lib/validation";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try{
         const body = await request.json();
         const { target_url, code: customCode } = body;

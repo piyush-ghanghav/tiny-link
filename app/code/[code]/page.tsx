@@ -4,9 +4,7 @@ import Link from 'next/link';
 import { CopyButton } from '@/components/ui/CopyButton';
 
 interface PageProps {
-  params: {
-    code: string;
-  };
+  params: Promise<{ code: string }>;
 }
 
 async function getLinkStats(code: string) {

@@ -27,12 +27,7 @@ export function LinksTable({ links, onDelete }: LinksTableProps) {
         await onDelete(code);
         setDeletingCode(null);
     }
-    
-    
-    const formatDate = (date: string | null) => {
-        if (!date) return 'Never';
-        return new Date(date).toLocaleString();
-    };
+
 
     const truncateUrl = (url: string, maxLength = 50) => {
         if (url.length <= maxLength) return url;
@@ -104,8 +99,15 @@ export function LinksTable({ links, onDelete }: LinksTableProps) {
                                     <td className="px-6 py-4 whitespace-nowrap text-gray-900">
                                     {link.clicks}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {formatDate(link.last_clicked_at)}
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                    {link.last_clicked_at ? (
+                                        <>
+                                            <div className="text-gray-700">{new Date(link.last_clicked_at).toLocaleDateString()}</div>
+                                            <div className="text-xs text-gray-500 mt-1">{new Date(link.last_clicked_at).toLocaleTimeString()}</div>
+                                        </>
+                                    ) : (
+                                        <span className="text-gray-500">Never</span>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <Link

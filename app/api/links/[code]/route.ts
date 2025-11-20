@@ -1,26 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@/lib/prisma'
+import { db } from '@/lib/db';
+import { link } from '@/lib/schema';
+import { eq, } from 'drizzle-orm';
+
 export const runtime = "nodejs";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params:  Promise<{ code: string }> }
+    { params }: { params: Promise<{ code: string }> }
 ) {
     try {
         const { code } = await params;
-        const link = await prisma.link.findFirst({
-            where: {
-                code: code,
-                deleted_at: null,
-            },
+        const linkData = await db.query.link.findFirst({
+            where: (link, { eq, and, isNull }) => 
+                and(eq(link.code, code), isNull(link.deleted_at))
         });
-        if (!link) {
+
+        if (!linkData) {
             return NextResponse.json(
                 { error: 'Link not found' },
                 { status: 404 }
             );
         }
-        return NextResponse.json(link);
+
+        return NextResponse.json(linkData);
     } catch(error) {
         console.error('Error fetching link:', error);
         return NextResponse.json(
@@ -28,7 +31,6 @@ export async function GET(
             { status: 500 }
         );
     }
-
 }
 
 export async function DELETE(
@@ -37,23 +39,21 @@ export async function DELETE(
 ) {
     try {
         const { code } = await params;
-        const link = await prisma.link.findFirst({
-            where: {
-                code: code,
-                deleted_at: null,
-            },
+        const linkData = await db.query.link.findFirst({
+            where: (link, { eq, and, isNull }) => 
+                and(eq(link.code, code), isNull(link.deleted_at))
         });
 
-        if (!link) {
+        if (!linkData) {
             return NextResponse.json(
                 { error: "Link not found" },
                 { status: 404 }
             );
         }
-        await prisma.link.update({
-            where: { code: code },
-            data: { deleted_at: new Date() },
-        });
+
+        await db.update(link)
+            .set({ deleted_at: new Date() })
+            .where(eq(link.code, code));
 
         return NextResponse.json({ message: 'Link deleted successfully' });
     } catch (error) {

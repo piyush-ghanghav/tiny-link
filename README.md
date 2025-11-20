@@ -1,6 +1,6 @@
 # TinyLink - URL Shortener
 
-A modern URL shortening service built with Next.js, Prisma, and PostgreSQL.
+A modern URL shortening service built with Next.js and PostgreSQL.
 
 ## Features
 
@@ -17,7 +17,7 @@ A modern URL shortening service built with Next.js, Prisma, and PostgreSQL.
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Database:** PostgreSQL (Neon)
-- **ORM:** Prisma
+- **ORM:** Drizzle ORM
 - **Styling:** Tailwind CSS
 - **Deployment:** Vercel
 
@@ -54,7 +54,7 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 
 4. Run database migrations
 ```bash
-npx prisma migrate dev
+npx drizzle-kit push --preview-feature
 ```
 
 5. Start the development server
@@ -91,17 +91,18 @@ GET /:code                 - Redirect to target URL (302)
 - `/:code` - Redirect to target URL
 
 ## Database Schema
-```prisma
-model Link {
-  id              Int       @id @default(autoincrement())
-  code            String    @unique
-  target_url      String
-  clicks          Int       @default(0)
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-  last_clicked_at DateTime?
-  deleted_at      DateTime?
-}
+```Drizzle
+
+export const link = pgTable('Link', {
+  id: serial('id').primaryKey(),
+  code: varchar('code', { length: 255 }).notNull().unique(),
+  target_url: text('target_url').notNull(),
+  clicks: integer('clicks').notNull().default(0),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+  updated_at: timestamp('updated_at').notNull().defaultNow(),
+  last_clicked_at: timestamp('last_clicked_at'),
+  deleted_at: timestamp('deleted_at'),
+});
 ```
 
 ## Deployment
@@ -120,7 +121,7 @@ model Link {
 
 5. Run database migrations in production:
 ```bash
-npx prisma migrate deploy
+npx drizzle-kit deploy
 ```
 
 ## Environment Variables

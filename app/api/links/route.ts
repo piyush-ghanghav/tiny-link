@@ -1,6 +1,7 @@
 import { NextRequest,NextResponse } from "next/server";
 import {prisma} from '@/lib/prisma'
 import { isValidCode, isValidUrl, generateCode } from "@/lib/validation";
+export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
     try{

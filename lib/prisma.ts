@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { PrismaClient } from '@/app/generated/prisma/client';
+import { PrismaClient } from '@/generated/prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -13,10 +13,4 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
-// Verify database connection
-if (process.env.NODE_ENV === 'production') {
-  prisma.$connect().catch((err) => {
-    console.error('Failed to connect to database:', err);
-    process.exit(1);
-  });
-}
+export default prisma;

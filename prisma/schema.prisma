@@ -6,10 +6,8 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "./client" 
-  previewFeatures = ["relationJoins"]
-  runtime         = "nodejs"
-  engineType      = "client"
+  output   = "./client"
+  engineType = "library"
 }
 
 datasource db {

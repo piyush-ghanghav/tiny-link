@@ -1,6 +1,12 @@
 import 'dotenv/config';
 import { PrismaClient } from '../prisma/client/client';
 
+const enginePath = process.env.PRISMA_QUERY_ENGINE_LIBRARY;
+if (enginePath) {
+  console.log('Using custom Prisma query engine path:', enginePath);
+  process.env.PRISMA_QUERY_ENGINE_LIBRARY = enginePath;
+}
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
